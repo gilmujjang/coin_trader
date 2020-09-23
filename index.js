@@ -6,27 +6,19 @@ import * as apikey from './apikey.js'
 const api_base = 'https://api.bithumb.com'
 const api_private_info = apikey.default
 
-const req_query = {
-  endpoint:'/info/ticker',
-  order_currency:"BTC",
-  payment_currency:"KRW"
-}
-
 const make_header = (obj) => {
   let output_string = [];
   Object.keys(obj).forEach( (val) => {
     let key = val
-    key = val
-    let value = encodeURIComponent(obj[val].replace(/[!'()*]/g, escape))
+		let value = encodeURIComponent(obj[val].replace(/[!'()*]/g, escape))
     output_string.push(key + '=' + value)
 	})
+	console.log(output_string)
   return API_Sign(output_string.join('&'),obj.endpoint)
 }
 
 const API_Sign = (str_q,endpoint) => {
-  let now = new Date().getTime()/1000
-  let s = parseInt(now, 10)
-  let nNonce = Number(String(s) + String(Math.round((now-s)*1000)/1000).substr(2,3))
+  let nNonce = new Date().getTime()
 	let spilter = String.fromCharCode(0)
 	return {
 		'Api-Key' : api_private_info.apiKey,
@@ -61,6 +53,13 @@ function base64_encode(data) {
   return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
 }
 
+const req_query = {
+	endpoint:'/trade/market_sell',
+	units:'0.0001',
+  order_currency:"BTC",
+	payment_currency:"KRW",
+}
+
 request({
 	method:'POST',
 	uri:api_base+req_query['endpoint'],
@@ -69,9 +68,8 @@ request({
 }, (err, res, result) => {
 	if(err){
 		console.log(err)
+		console.log("에러남")
 		return
 	}
-	console.log(result)
+	console.log(JSON.parse(result))
 })
-make_header(req_query)
-console.log("end")
