@@ -1,15 +1,12 @@
-import request from 'request'
+import request from 'request';
 import { make_header } from './api_function.js';
-
 
 const api_base = 'https://api.bithumb.com';
 
-function trade(SoB, which, howmuch){
+function mymoney(){
   let req_query = {
-    endpoint:'/trade/market_'+SoB,
-    units:howmuch,
-    order_currency:which,
-    payment_currency:"KRW",
+    endpoint:"/info/balance",
+    currency:"ALL"
   }
   request({
     method:'POST',
@@ -26,5 +23,4 @@ function trade(SoB, which, howmuch){
   })
 }
 
-
-trade("buy","ETH","0.003")
+mymoney()
