@@ -3,7 +3,7 @@ import { make_header } from './api_function.js';
 
 const api_base = 'https://api.bithumb.com';
 
-function coinprice(coin){
+export function coinprice(coin){
   let req_query = {
     endpoint:"/public/orderbook/"+coin+"_KRW"
   }
@@ -21,5 +21,3 @@ function coinprice(coin){
     console.log(JSON.parse(result).data.bids[0].price)
   })
 }
-
-coinprice("BTC")
