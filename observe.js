@@ -1,4 +1,3 @@
-import { coinprice } from './search.js';
 import request from 'request';
 
 
@@ -14,6 +13,7 @@ request({
     return
   }
   a = JSON.parse(result).data.bids[0].price
+  i = a
   }
 )
 
@@ -31,4 +31,4 @@ setInterval(() => {
   )
   console.log(i-a)
   a = i
-},5000)
+},3000)
