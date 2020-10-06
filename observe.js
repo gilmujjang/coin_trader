@@ -29,12 +29,21 @@ setInterval(() => {
       return
     }
     let n = JSON.parse(result).data.length-1;
-    let AM = 0;
-    for(let i=0; i<24*20; i++){
-      AM = AM + Number(JSON.parse(result).data[n-i][2])
+    let shortAM = 0;
+    let longAM = 0;
+    let container = 0;
+    for(let i=0; i<12; i++){
+      container = container + Number(JSON.parse(result).data[n-i][2])
     }
-    AM = Math.round(AM/(24*20))
-    console.log(AM)
+    shortAM = Math.round(container/12)
+    container = 0;
+    for(let i=0; i<60; i++){
+      container = container + Number(JSON.parse(result).data[n-i][2])
+    }
+    longAM = Math.round(container/60)
+    if(lognAM<shortAM){
+
+    }
     }
   )
   // request({
