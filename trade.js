@@ -4,7 +4,7 @@ import { make_header } from './api_function.js';
 
 const api_base = 'https://api.bithumb.com';
 
-function trade(SoB, which, howmuch){
+export function trade(SoB, which, howmuch){
   let req_query = {
     endpoint:'/trade/market_'+SoB,
     units:howmuch,
@@ -25,6 +25,3 @@ function trade(SoB, which, howmuch){
     console.log(JSON.parse(result))
   })
 }
-
-
-trade("buy","ETH","0.003")

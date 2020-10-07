@@ -1,10 +1,13 @@
 import request from 'request';
-
+import { trade } from './trade.js'
 
 let last_price = 0;
 let now_price = 0;
-let fourtyMA = 100000000;
-let twentyMA = 0;
+let fiveMA = 0;
+let halfMA = 0;
+let oneMA = 0;
+let stoploss = 0;
+let status = false;
 
 request({
   uri:"https://api.bithumb.com/public/orderbook/",
@@ -29,20 +32,33 @@ setInterval(() => {
       return
     }
     let n = JSON.parse(result).data.length-1;
-    let shortAM = 0;
-    let longAM = 0;
     let container = 0;
-    for(let i=0; i<12; i++){
+    for(let i=0; i<24; i++){
       container = container + Number(JSON.parse(result).data[n-i][2])
     }
-    shortAM = Math.round(container/12)
+    oneMA = Math.round(container/24)
     container = 0;
     for(let i=0; i<60; i++){
       container = container + Number(JSON.parse(result).data[n-i][2])
     }
-    longAM = Math.round(container/60)
-    if(lognAM<shortAM){
+    halfMA = Math.round(container/60)
+    container = 0;
+    for(let i=0; i<120; i++){
+      container = container + Number(JSON.parse(result).data[n-i][2])
+    }
+    fiveMA = Math.round(container/120)
 
+    if(halfMA > fiveMA && oneMA>halfMA && status==false){
+      console.log(halfMA +" --- "+fiveMA)
+      console.log("매수")
+      // trade("buy","BTC","0.001")
+      status = true;
+    }
+    if(halfMA > oneMA && status==true){
+      console.log(halfMA +" --- "+oneMA)
+      console.log("매도")
+      // trade("sell","BTC","0.001")
+      status = false
     }
     }
   )
