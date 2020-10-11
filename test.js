@@ -1,13 +1,12 @@
-import request from 'request';
-function req(callback) {
-  request('https://api.bithumb.com/public/orderbook/', function (error, response, body) {
-    callback(body)
-    }
-  );
+function a(callback){
+  setTimeout(function(){
+    console.log("start");
+    callback();
+  },1000)
 }
 
-function a(b){
-  console.log(b)
+function b(){
+  console.log("finish");
 }
 
-a(req())
+a(b)
