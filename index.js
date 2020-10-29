@@ -23,6 +23,7 @@ let req_query = {
   currency:"ALL"
 }
 
+
 function make_header(obj){
 	let output_string = [];
   Object.keys(obj).forEach( (val) => {
@@ -87,7 +88,7 @@ function trade(SoB, which, howmuch){
   }, (err, res, result) => {
     if(err){
       console.log(err)
-      console.log("에러남")
+      console.log("trade 에서 error"+SoB+Which)
       return
     }
     console.log(JSON.parse(result))
@@ -102,7 +103,7 @@ setInterval(() => {
   }, (err, res, result) => {
     if(err){
       console.log(err)
-      console.log("에러남")
+      console.log("Bitcoin 캔들차트 불러오는데 error")
       return
     }
     let r = JSON.parse(result).data;
@@ -114,7 +115,7 @@ setInterval(() => {
         }
     }
     //10일고가에서 5%하락시 손절
-    sellbtc = btctendaymax*0.95;
+    sellbtc = btctendaymax*0.97;
   }
   )
   //이더리움 오늘 이전 10일 고가,손절가
@@ -123,7 +124,7 @@ setInterval(() => {
     }, (err, res, result) => {
     if(err){
       console.log(err)
-      console.log("에러남")
+      console.log("이더리움 캔들차트 불러오는데 error")
       return
     }
     let r = JSON.parse(result).data;
@@ -135,7 +136,7 @@ setInterval(() => {
         }
     }
     //10일고가에서 5%하락시 손절
-    selleth = ethtendaymax*0.95;
+    selleth = ethtendaymax*0.97;
   }
   )
   //비트코인 현재가
@@ -144,7 +145,7 @@ setInterval(() => {
   }, (err, res, result) => {
     if(err){
       console.log(err)
-      console.log("에러남")
+      console.log("비트코인 현재가 불러오는데 error")
       return
     }
     nowbtc = JSON.parse(result).data.bids[0].price
@@ -155,7 +156,7 @@ setInterval(() => {
   }, (err, res, result) => {
     if(err){
       console.log(err)
-      console.log("에러남")
+      console.log("이더리움 불러오는데 error")
       return
     }
     noweth = JSON.parse(result).data.bids[0].price
@@ -170,12 +171,24 @@ setInterval(() => {
     }, (err, res, result) => {
       if(err){
         console.log(err)
-        console.log("에러남")
+        console.log("내 계좌 조회하는데 error")
         return
       }
       cash = Number(JSON.parse(result).data.total_krw);
       btc = Number(JSON.parse(result).data.total_btc);
+      if(btc>10000){
+        btcstatus = true;
+      }
+      if(btc<10000){
+        btcstatus = false;
+      }
       eth = Number(JSON.parse(result).data.total_eth);
+      if(eth>10000){
+        ethstatus = true;
+      }
+      if(eth<10000){
+        ethstatus = false;
+      }
       total = cash + btc*nowbtc + eth*noweth;
     })
   },1000)
@@ -187,16 +200,14 @@ setInterval(() => {
       //손절조건 충족
       if(sellbtc>nowbtc){
         trade("sell","btc",btc)
-        btcstatus = false;
         console.log("비트코인 매도" + btc*nowbtc)
       }
     }
     //비트코인 없음
     if(btcstatus == false){
       if(nowbtc>btctendaymax){
-        trade("buy","btc",nowbtc/(total*0.3))
-        btcstatus = true;
-        console.log("비트코인 매수" + nowbtc/(total*0.3))
+        trade("buy","btc",nowbtc/(total*0.4))
+        console.log("비트코인 매수" + nowbtc/(total*0.4))
       }
     }
 
@@ -205,16 +216,14 @@ setInterval(() => {
       //손절조건 충족
       if(selleth>noweth){
         trade("sell","eth",eth)
-        ethstatus = false;
         console.log("이더리움 매도" + eth*noweth)
       }
     }
     //이더리움 없음
     if(ethstatus == false){
       if(noweth>ethtendaymax){
-        trade("buy","eth",noweth/(total*0.3))
-        ethstatus = true;
-        console.log("이더리움 매수" + noweth/(total*0.3))
+        trade("buy","eth",noweth/(total*0.4))
+        console.log("이더리움 매수" + noweth/(total*0.4))
       }
     }
 
