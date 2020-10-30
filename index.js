@@ -1,7 +1,14 @@
 const cryptojsHmacSHA512 = require('crypto-js/hmac-sha512.js');
 const apikey = require('./apikey.js').default;
 const request = require('request');
+const mongo = require('mongodb').MongoClient;
 
+// import cryptojsHmacSHA512 from 'crypto-js/hmac-sha512.js';
+// import apikey from './apikey.js';
+// import request from 'request';
+// import mongodb from 'mongodb';
+// const mongo = mongodb.MongoClient;
+// vscode 에서 실행할때는 바꿔서하셈
 
 const api_base = 'https://api.bithumb.com';
 
@@ -18,28 +25,23 @@ let btc = 0;
 let eth =0;
 let total = 0;
 
-let req_query = {
-  endpoint:"/info/balance",
-  currency:"ALL"
-}
 
 
 function make_header(obj){
 	let output_string = [];
   Object.keys(obj).forEach( (val) => {
     let key = val
-		let value = encodeURIComponent(obj[val].replace(/[!'()*]/g, escape))
+		let value = encodeURIComponent(obj[val])
     output_string.push(key + '=' + value)
 	})
 	return API_Sign(output_string.join('&'),obj.endpoint)
 	
 	function API_Sign(str_q,endpoint){
-		const api_private_info = apikey.default;
 		let nNonce = new Date().getTime()
 		let spilter = String.fromCharCode(0)
 		return {
-			'Api-Key' : api_private_info.apiKey,
-			'Api-Sign' : (base64_encode(cryptojsHmacSHA512(endpoint + spilter + str_q + spilter + nNonce, api_private_info.secretKey).toString())),
+			'Api-Key' : apikey.apiKey,
+			'Api-Sign' : (base64_encode(cryptojsHmacSHA512(endpoint + spilter + str_q + spilter + nNonce, apikey.secretKey).toString())),
 			'Api-Nonce' : nNonce
 		};
 	}
@@ -73,7 +75,7 @@ function make_header(obj){
 }
 
 ///trade function
-function trade(SoB, which, howmuch){
+function trade(SoB, which, howmuch, nowprice){
   let req_query = {
     endpoint:'/trade/market_'+SoB,
     units:howmuch,
@@ -91,8 +93,34 @@ function trade(SoB, which, howmuch){
       console.log("trade 에서 error"+SoB+Which)
       return
     }
-    console.log(JSON.parse(result))
+    console.log(JSON.parse(result));
+    if(JSON.parse(result).status == '0000'){
+      saveinfo()
+    }
   })
+ /// database 에 저장
+ function saveinfo(){
+  mongo.connect(apikey.uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+    }, (err, client) => {
+    if (err) {
+      console.error(err)
+      console.log("mongodb연결하다 error")
+    }
+    //...
+    const db = client.db('trade-record')
+    const collection = db.collection('record')
+    collection.insertOne({what:SoB, which:which, units:howmuch, howmuch:howmuch*nowprice}, (err, result) => {
+      if (err) {
+        console.log(err)
+        console.log("mongodb저장하다 error")
+      }
+      client.close()
+    })
+  })
+}
+
 }
 
 setInterval(() => {
@@ -163,6 +191,10 @@ setInterval(() => {
   })
   //1초후에 내 자산 조회
   setTimeout(() => {
+    let req_query = {
+      endpoint:"/info/balance",
+      currency:"ALL"
+    }
     request({
       method:'POST',
       uri:api_base+req_query['endpoint'],
@@ -176,17 +208,17 @@ setInterval(() => {
       }
       cash = Number(JSON.parse(result).data.total_krw);
       btc = Number(JSON.parse(result).data.total_btc);
-      if(btc>10000){
+      if(btc>5000){
         btcstatus = true;
       }
-      if(btc<10000){
+      if(btc<5000){
         btcstatus = false;
       }
       eth = Number(JSON.parse(result).data.total_eth);
-      if(eth>10000){
+      if(eth>5000){
         ethstatus = true;
       }
-      if(eth<10000){
+      if(eth<5000){
         ethstatus = false;
       }
       total = cash + btc*nowbtc + eth*noweth;
@@ -199,15 +231,16 @@ setInterval(() => {
     if(btcstatus == true){
       //손절조건 충족
       if(sellbtc>nowbtc){
-        trade("sell","btc",btc)
+        trade("sell","btc",Math.floor(btc*10000)/10000, nowbtc)
         console.log("비트코인 매도" + btc*nowbtc)
       }
     }
     //비트코인 없음
     if(btcstatus == false){
       if(nowbtc>btctendaymax){
-        trade("buy","btc",nowbtc/(total*0.4))
-        console.log("비트코인 매수" + nowbtc/(total*0.4))
+        trade("buy","btc",(total*0.3)/nowbtc, nowbtc)
+        Math.floor(howmuch* 10000)/10000
+        console.log("비트코인 매수" + Math.floor((nowbtc/(total*0.3)*10000))/10000)
       }
     }
 
@@ -215,15 +248,15 @@ setInterval(() => {
     if(ethstatus == true){
       //손절조건 충족
       if(selleth>noweth){
-        trade("sell","eth",eth)
+        trade("sell","eth",Math.floor(eth*10000)/10000, noweth)
         console.log("이더리움 매도" + eth*noweth)
       }
     }
     //이더리움 없음
     if(ethstatus == false){
       if(noweth>ethtendaymax){
-        trade("buy","eth",noweth/(total*0.4))
-        console.log("이더리움 매수" + noweth/(total*0.4))
+        trade("buy","eth",(total*0.3)/noweth, noweth)
+        console.log("이더리움 매수" + Math.floor((noweth/(total*0.3)*10000))/10000)
       }
     }
 

@@ -1,5 +1,7 @@
 import  cryptojsHmacSHA512 from 'crypto-js/hmac-sha512.js'
-import * as apikey from './apikey.js'
+import  apikey from './apikey.js'
+import request from 'request';
+
 
 
 
@@ -13,12 +15,11 @@ export function make_header(obj){
 	return API_Sign(output_string.join('&'),obj.endpoint)
 	
 	function API_Sign(str_q,endpoint){
-		const api_private_info = apikey.default;
 		let nNonce = new Date().getTime()
 		let spilter = String.fromCharCode(0)
 		return {
-			'Api-Key' : api_private_info.apiKey,
-			'Api-Sign' : (base64_encode(cryptojsHmacSHA512(endpoint + spilter + str_q + spilter + nNonce, api_private_info.secretKey).toString())),
+			'Api-Key' : apikey.apiKey,
+			'Api-Sign' : (base64_encode(cryptojsHmacSHA512(endpoint + spilter + str_q + spilter + nNonce, apikey.secretKey).toString())),
 			'Api-Nonce' : nNonce
 		};
 	}
