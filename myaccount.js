@@ -48,14 +48,10 @@ function myaccount(){
       cash = Number(JSON.parse(result).data.total_krw);
       btc = Number(JSON.parse(result).data.total_btc*nowbtc);
       eth = Number(JSON.parse(result).data.total_eth*noweth);
+      console.log(" cash: "+cash+" btc: "+btc+" eth: "+eth)
+
     })
-  },500)
+  },1000)
 }
 
 myaccount()
-setTimeout(function(){
-  console.log(cash)
-  console.log(btc)
-  console.log(eth)
-  console.log(cash + btc + eth)
-},1000)
