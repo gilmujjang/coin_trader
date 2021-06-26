@@ -1,5 +1,6 @@
 import request from 'request';
 import { make_header } from './api_function.js';
+import { dbService } from './fbase.js'
 
 const api_base = 'https://api.bithumb.com';
 let cash = 0;
@@ -52,6 +53,17 @@ function myaccount(){
 
     })
   },1000)
+
+  setTimeout(function(){
+    const balanceobj = {
+      cash : cash,
+      btc : btc,
+      eth : eth,
+      total : cash+btc+eth
+    }
+    dbService.collection("balance").doc("test").set(balanceobj)
+    console.log("저장완료")
+  },2000)
 }
 
 myaccount()
