@@ -13,7 +13,7 @@ let req_query = {
   currency:"ALL"
 }
 
-function myaccount(){
+export default function myaccount(){
   request({
     uri:"https://api.bithumb.com/public/orderbook/BTC_KRW",
   }, (err, res, result) => {
@@ -65,5 +65,3 @@ function myaccount(){
     console.log("저장완료")
   },2000)
 }
-
-myaccount()

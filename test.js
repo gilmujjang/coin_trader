@@ -1,31 +1,20 @@
-import request from 'request';
+import mybalance from './mybalance.js'
+import search from './search.js'
 
-let max = 0;
-function req(callback){
-  request({
-    uri:"https://api.bithumb.com/public/candlestick/",
-}, (err, res, result) => {
-    if(err){
-      console.log(err)
-      console.log("에러남")
-      return
-    }
-    let r = JSON.parse(result).data;
-    let n = r.length-1;
-    max = r[n][3]
-    for(let i=0; i<10; i++){
-      if(r[n-i][3]>max){
-        max = r[n-i][3]
-      }
-    }
-  })
-  return max
-}
+// mybalance()
+// search("BTC")
+let count = 0;
 
-function main(){
-  req(function(err,max){
-    console.log(max)
-  })
-}
+const loop = setInterval(async function() {
+  console.log("request")
 
-main()
+  const result = await search("ETH");
+  console.log(result)
+
+  count ++
+  if(count === 3){
+    clearInterval(loop)
+  }
+
+  console.log("done")
+},1000)
