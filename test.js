@@ -6,15 +6,11 @@ import search from './search.js'
 let count = 0;
 
 const loop = setInterval(async function() {
-  console.log("request")
-
-  const result = await search("ETH");
-  console.log(result)
+  const coin_price = await search("ETH");
+  console.log(coin_price)
 
   count ++
   if(count === 3){
     clearInterval(loop)
   }
-
-  console.log("done")
 },1000)
