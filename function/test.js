@@ -7,7 +7,7 @@ import candle_data from './candle_data.js'
 
 // candle data
 async function test(){
-  const candle = await candle_data("BTC","24h",3)
+  const candle = await candle_data("BTC","24h",2500)
   console.log(candle)
 }
 test()
