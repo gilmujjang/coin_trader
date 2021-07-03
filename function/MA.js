@@ -1,6 +1,4 @@
 import request from 'request';
-import { trade } from './trade.js'
-
 
 request({
   uri:"https://api.bithumb.com/public/orderbook/",

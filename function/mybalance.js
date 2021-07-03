@@ -65,5 +65,3 @@ export default function myaccount(){
     console.log("저장완료")
   },2000)
 }
-
-myaccount()

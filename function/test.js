@@ -1,10 +1,18 @@
 import mybalance from './mybalance.js'
 import search from './search.js'
+import candle_data from './candle_data.js'
 
 // mybalance()
 // search("BTC")
-let count = 0;
 
+// candle data
+async function test(){
+  const candle = await candle_data("BTC","24h",3)
+  console.log(candle)
+}
+test()
+
+let count = 0;
 
 let btc_list = new Array(3)
 
