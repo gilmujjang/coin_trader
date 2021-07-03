@@ -22,11 +22,11 @@ export default async function candle_data(coin, intervals, length){
   for(let i=0; i<length; i++){
     candle.push(response_json["data"][n-i])
     const data_obj = {
-      time: response_json["data"][n-i][0],
-      start: response_json["data"][n-i][1],
-      end: response_json["data"][n-i][2],
-      high: response_json["data"][n-i][3],
-      low: response_json["data"][n-i][4],
+      time: response_json["data"][i][0],
+      open: response_json["data"][i][1],
+      close: response_json["data"][i][2],
+      high: response_json["data"][i][3],
+      low: response_json["data"][i][4],
     }
     json_data.push(data_obj)
   }
