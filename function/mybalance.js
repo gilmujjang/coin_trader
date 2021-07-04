@@ -2,18 +2,20 @@ import request from 'request';
 import { make_header } from './api_function.js';
 import { dbService } from './fbase.js'
 
-const api_base = 'https://api.bithumb.com';
-let cash = 0;
-let btc =0;
-let eth = 0;
-let nowbtc = 0;
-let noweth = 0;
-let req_query = {
-  endpoint:"/info/balance",
-  currency:"ALL"
-}
-
-export default function myaccount(){
+export default async function myaccount(){
+  const api_base = 'https://api.bithumb.com';
+  let cash = 0;
+  let btc =0;
+  let eth = 0;
+  let nowbtc = 0;
+  let noweth = 0;
+  let req_query = {
+    endpoint:"/info/balance",
+    currency:"ALL"
+  }
+  const nowbtc = new Promise((resolve, reject) => {
+    
+  })
   request({
     uri:"https://api.bithumb.com/public/orderbook/BTC_KRW",
   }, (err, res, result) => {

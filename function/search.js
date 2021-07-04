@@ -3,8 +3,7 @@ import request from 'request';
 
 export default async function search(coin){
   const api_url = "https://api.bithumb.com/public/orderbook/"+coin+"_KRW";
-
-  return new Promise((resolve, reject) => {
+  const response = new Promise((resolve, reject) => {
     request({
       uri:api_url,
     },(err, res, result) => {
@@ -16,4 +15,7 @@ export default async function search(coin){
       }
     )
   })
+  const response_json = await response;
+
+  return response_json
 }
