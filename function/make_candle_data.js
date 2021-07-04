@@ -31,9 +31,9 @@ export default async function candle_data(coin, intervals, length){
     json_data.push(data_obj)
   }
   const json_file = JSON.stringify(json_data)
-  fs.writeFileSync('btc_candle_data',json_file)
+  fs.writeFileSync('btc_candle_data.json',json_file)
 
   return candle
 }
 
-candle_data("BTC","24h",2500)
+candle_data("BTC","24h",2657)

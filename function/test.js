@@ -1,6 +1,6 @@
 import mybalance from './mybalance.js'
 import search from './search.js'
-import candle_data from './candle_data.js'
+import candle_data from './make_candle_data.js'
 
 // mybalance()
 // search("BTC")
