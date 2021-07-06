@@ -5,8 +5,6 @@ import balance from './balance.js'
 import trade from './trade.js'
 
 
-
-
 // mybalance()
 // search("BTC")
 // trade("sell","btc",0.0001)
