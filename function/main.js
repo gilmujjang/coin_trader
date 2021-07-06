@@ -1,4 +1,3 @@
-import search from './search.js'
 import search_coins from './search_coins.js'
 import balance from './balance.js'
 import trade from './trade.js'
@@ -10,10 +9,16 @@ import trade from './trade.js'
 
 let count = 0;
 
-const btc_list = new Array(5);
-const eth_list = new Array(5);
-const lists_list = [btc_list, eth_list];
-const target_coin_list = ["BTC", "ETH"];
+const btc_list = new Array(10);
+const eth_list = new Array(10);
+const bnb_list = new Array(10);
+const ada_list = new Array(10);
+const xrp_list = new Array(10);
+const dot_list = new Array(10);
+const uni_list = new Array(10);
+
+const lists_list = [btc_list, eth_list,bnb_list,ada_list,xrp_list,dot_list,uni_list];
+const target_coin_list = ["BTC", "ETH","BNB","ADA","XRP","DOT","UNI"];
 
 async function init_function(){
   const my_coins = await balance(target_coin_list)
@@ -39,7 +44,8 @@ const MainLoop = setInterval(async function() {
 
   for(let i=0; i< lists_list.length; i++){
     lists_list[i][0] = coins_price[i];
-    console.log(lists_list[i])
+    console.log(target_coin_list[i]);
+    console.log(lists_list[i]);
   }
 
   count ++
