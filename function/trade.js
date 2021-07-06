@@ -76,5 +76,3 @@ function saveinfo(trade_obj){
   dbService.collection("trade").doc(time).set(trade_obj)
   console.log("거래내역 저장완료")
 }
-
-trade("buy","BTC", 0.0001)

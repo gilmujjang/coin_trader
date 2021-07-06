@@ -1,7 +1,7 @@
 import search from './search.js'
 import search_coins from './search_coins.js'
 import balance from './balance.js'
-// import trade from './trade.js'
+import trade from './trade.js'
 
 
 // mybalance()
@@ -10,33 +10,40 @@ import balance from './balance.js'
 
 let count = 0;
 
-let btc_list = new Array(5)
-const target_coin_list = ["BTC", "ETH"]
-
-
+const btc_list = new Array(5);
+const eth_list = new Array(5);
+const lists_list = [btc_list, eth_list];
+const target_coin_list = ["BTC", "ETH"];
 
 async function init_function(){
-  const coin_price_init = await search("BTC");
-  btc_list.fill(coin_price_init)
   const my_coins = await balance(target_coin_list)
   console.log(my_coins)
-  // const prices = await search_coins(target_coin_list)
-  // console.log(prices)
+
+  const init_coins_price = await search_coins(target_coin_list)
+  for(let i=0; i< lists_list.length; i++){
+    lists_list[i].fill(init_coins_price[i]);
+  }
 }
 
 init_function();
 
 
 const MainLoop = setInterval(async function() {
-  const coin_price = await search("BTC");
-  for (let i=btc_list.length-1; i>0; i--){
-    btc_list[i]= btc_list[i-1];
+  const coins_price = await search_coins(target_coin_list);
+
+  for(let i=0; i< lists_list.length; i++){
+    for (let j=lists_list[i].length-1; j>0; j--){
+      lists_list[i][j]= lists_list[i][j-1];
+    }
   }
-  btc_list[0] = coin_price;
-  console.log(btc_list);
+
+  for(let i=0; i< lists_list.length; i++){
+    lists_list[i][0] = coins_price[i];
+    console.log(lists_list[i])
+  }
 
   count ++
   if(count === 5){
     clearInterval(MainLoop);
   }
-},1000)
+},10000)
