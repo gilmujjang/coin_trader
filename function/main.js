@@ -2,6 +2,8 @@ import mybalance from './mybalance.js'
 import search from './search.js'
 import search_coins from './search_coins.js'
 import balance from './balance.js'
+import trade from './trade.js'
+
 
 
 
