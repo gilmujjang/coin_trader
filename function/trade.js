@@ -23,13 +23,16 @@ export default function trade(SoB, coin, howmuch){
     }
     if(JSON.parse(result).status == '0000'){
       let date = moment().format('YYYYMMDDHHmmss');
-
       const trade_obj = {
         time: date,
         SoB: SoB,
         coin: coin,
         howmuch: howmuch
       }
+      request({
+        uri: 'https://api.bithumb.com'+req_query['endpoint'],
+      })
+
       saveinfo(trade_obj)
     } else {
       console.log("trading error")
