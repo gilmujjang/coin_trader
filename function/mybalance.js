@@ -13,9 +13,6 @@ export default async function myaccount(){
     endpoint:"/info/balance",
     currency:"ALL"
   }
-  const nowbtc = new Promise((resolve, reject) => {
-    
-  })
   request({
     uri:"https://api.bithumb.com/public/orderbook/BTC_KRW",
   }, (err, res, result) => {

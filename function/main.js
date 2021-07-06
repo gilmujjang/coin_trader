@@ -1,5 +1,7 @@
 import mybalance from './mybalance.js'
 import search from './search.js'
+import search_coins from './search_coins.js'
+
 
 // mybalance()
 // search("BTC")
@@ -9,10 +11,14 @@ import search from './search.js'
 let count = 0;
 
 let btc_list = new Array(5)
+const target_coin_list = ["BTC", "ETH"]
+
 
 async function init_function(){
   const coin_price_init = await search("BTC");
   btc_list.fill(coin_price_init)
+  // const prices = await search_coins(target_coin_list)
+  // console.log(prices)
 }
 
 init_function();
