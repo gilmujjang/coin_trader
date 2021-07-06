@@ -9,8 +9,7 @@ import trade from './trade.js'
 
 // mybalance()
 // search("BTC")
-
-// candle data
+// trade("sell","btc",0.0001)
 
 let count = 0;
 

@@ -3,7 +3,7 @@ import { make_header } from './api_function.js';
 import { dbService } from './fbase.js';
 import moment from 'moment'
 
-function trade(SoB, coin, howmuch){
+export default function trade(SoB, coin, howmuch){
   let req_query = {
     endpoint:'/trade/market_'+SoB,
     units:howmuch,
@@ -45,5 +45,3 @@ function trade(SoB, coin, howmuch){
   }
 
 }
-
-trade("sell","btc",0.0001)
