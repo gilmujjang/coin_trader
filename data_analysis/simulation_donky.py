@@ -14,7 +14,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 plt.rc('font', family='Malgun Gothic')
 
-filename = './etc/btc_candle_sideway_2018.json'
+filename = './etc/btc_candle_all.json'
 
 df = pd.read_json(filename)
 fig, ax = plt.subplots(figsize=(10, 5))

@@ -12,13 +12,16 @@ let count = 0;
 const btc_list = new Array(10);
 const eth_list = new Array(10);
 const bnb_list = new Array(10);
-const ada_list = new Array(10);
-const xrp_list = new Array(10);
-const dot_list = new Array(10);
-const uni_list = new Array(10);
+// const ada_list = new Array(10);
+// const xrp_list = new Array(10);
+// const dot_list = new Array(10);
+// const uni_list = new Array(10);
 
-const lists_list = [btc_list, eth_list,bnb_list,ada_list,xrp_list,dot_list,uni_list];
-const target_coin_list = ["BTC", "ETH","BNB","ADA","XRP","DOT","UNI"];
+//,"ADA","XRP","DOT","UNI"
+//,ada_list,xrp_list,dot_list,uni_list
+
+const lists_list = [btc_list, eth_list,bnb_list];
+const target_coin_list = ["BTC", "ETH","BNB"];
 
 async function init_function(){
   const my_coins = await balance(target_coin_list)
