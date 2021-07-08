@@ -12,13 +12,7 @@ let count = 0;
 const btc_list = new Array(10);
 const eth_list = new Array(10);
 const bnb_list = new Array(10);
-// const ada_list = new Array(10);
-// const xrp_list = new Array(10);
-// const dot_list = new Array(10);
-// const uni_list = new Array(10);
 
-//,"ADA","XRP","DOT","UNI"
-//,ada_list,xrp_list,dot_list,uni_list
 
 const lists_list = [btc_list, eth_list,bnb_list];
 const target_coin_list = ["BTC", "ETH","BNB"];
@@ -43,16 +37,17 @@ const MainLoop = setInterval(async function() {
     for (let j=lists_list[i].length-1; j>0; j--){
       lists_list[i][j]= lists_list[i][j-1];
     }
-  }
-
-  for(let i=0; i< lists_list.length; i++){
     lists_list[i][0] = coins_price[i];
-    console.log(target_coin_list[i]);
-    console.log(lists_list[i]);
+    if(coins_price[i] > lists_list[i][1]){
+      console.log(target_coin_list[i],lists_list[i][1],"->",coins_price[i],"👍")
+    }
+    if(coins_price[i] < lists_list[i][1]){
+      console.log(target_coin_list[i],lists_list[i][1],"->",coins_price[i],"👎")
+    }
   }
 
   count ++
-  if(count === 5){
+  if(count === 3){
     clearInterval(MainLoop);
   }
 },10000)
