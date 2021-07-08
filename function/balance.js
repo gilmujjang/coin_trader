@@ -22,13 +22,15 @@ export default async function balance(coinlist){
     )
   })
   const response_json = await response;
+  let coin_list = coinlist;
   const my_coins = await Promise.all(
-    coinlist.map(async(coin) => {
+    coin_list.map(async(coin) => {
       const lower_coin = coin.toLowerCase();
       const coin_worth = response_json["available_"+lower_coin] * response_json["xcoin_last_"+lower_coin]
       return Math.round(coin_worth)
     })
   )
+  my_coins.unshift(Math.round(response_json["available_krw"]))
   return my_coins
 }
 

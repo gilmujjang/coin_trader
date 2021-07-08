@@ -9,9 +9,9 @@ import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 
-MA_1 = 3
+MA_1 = 20
 
-SD = 1
+SD = 1.5
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
@@ -19,7 +19,7 @@ plt.rc('font', family='Malgun Gothic')
 
 # filename = './etc/btc_candle_sideway_2013.json'
 # filename = './etc/btc_candle_sideway_2018.json'
-filename = './etc/btc_candle_fall.json'
+filename = './etc/btc_candle_all.json'
 
 df = pd.read_json(filename)
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -119,19 +119,20 @@ day_list = []
 name_list = []
 
 for i, day in enumerate(df['time']):
-    if i % 200 == 0:
+    if i % 100 == 0:
         day_list.append(i)
         name_list.append(day)
 
 ax.set_title(
-    'BTC-볼린저 상단 매수 고가 -10% 매도, 이동평균선 19일 표준편차 2배 비교, 총 자산의 100%투자, 2013~2021 전체기간', fontsize=22)
+    'BTC-볼린저 상단 매수 고가 -10% 매도, 이동평균선 15일 표준편차 1.5배 비교 2018 하락기간', fontsize=22)
 ax.set_ylabel('수익률 (배)')
 ax.set_xlabel('Date')
 ax.xaxis.set_major_locator(ticker.FixedLocator(day_list))
 ax.xaxis.set_major_formatter(ticker.FixedFormatter(name_list))
-print(date)
-print(return_rate_1)
-# plt.plot(date, return_rate_1)
-# plt.plot(date, relative_price, color='r')
-# plt.legend(['MA 8일', '보유 수익률'])
-# plt.show()
+
+plt.plot(date, return_rate_1)
+plt.plot(date, relative_price, color='r')
+plt.legend(['투자전략', 'BTC 단순 보유 수익률'])
+plt.show()
+
+print(trade_1)

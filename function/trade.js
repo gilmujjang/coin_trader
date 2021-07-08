@@ -58,13 +58,19 @@ function order_information(coin, order_id){
         }
       )
     })
-    let order_info_response = await order_info
+    const order_info_response = await order_info
     if(order_info_response.data.order_status != 'Completed'){
       console.log("체결에러");
       return
     }
-    console.log(order_info_response.data)
 
+    let total = 0;
+    const contract = await order_info_response.data.contract;
+    for(let i=0; i < contract.length; i++){
+      total = total + contract[i].total
+    }
+
+    console.log(coin," ",total," ",order_info_response.data.type)
     saveinfo(order_info_response.data)
     return
   }, 500);
@@ -72,7 +78,6 @@ function order_information(coin, order_id){
 
 function saveinfo(trade_obj){
   let time = moment().format('YYYYMMDDHHmmss');
-  console.log(trade_obj)
   dbService.collection("trade").doc(time).set(trade_obj)
-  console.log("거래내역 저장완료")
+  console.log("거래내역 저장")
 }

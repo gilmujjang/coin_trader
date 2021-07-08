@@ -14,7 +14,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 plt.rc('font', family='Malgun Gothic')
 
-filename = './etc/btc_candle_sideway_2018.json'
+filename = './etc/btc_candle_all.json'
 
 df = pd.read_json(filename)
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -49,11 +49,11 @@ with open(filename, 'r', encoding='utf-8') as f:
         ten_days_up.append(ten_days_average+ten_days_standard_deviation*SD)
         ten_days_bottom.append(ten_days_average-ten_days_standard_deviation*SD)
 
-plt.plot(date, price, date, ten_days_center,
+plt.plot(date, ten_days_center,
          date, ten_days_up, date, ten_days_bottom)
 # 그래프 title과 축 이름 지정
 ax.set_title('BTC Candle Chart', fontsize=22)
-ax.set_ylabel('BTC price')
+ax.set_ylabel('BTC price', rotation=0)
 ax.set_xlabel('Date')
 
 for i, day in enumerate(df['time']):
@@ -67,7 +67,7 @@ ax.xaxis.set_major_formatter(ticker.FixedFormatter(name_list))
 candlestick2_ohlc(ax, df['open'], df['high'],
                   df['low'], df['close'],
                   width=0.5, colorup='r', colordown='b')
-ax.legend(['종가', '20일 이동평균선', '볼린저밴드 상단', '볼린저밴드 하단'])
+ax.legend(['20일 이동평균선', '볼린저밴드 상단', '볼린저밴드 하단'])
 
 plt.grid()
 plt.show()
