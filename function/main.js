@@ -34,7 +34,16 @@ async function init_function(){
   for(let i=1; i<my_asset.length; i++){
     console.log(target_coin_list[i-1],":",my_asset[i])
   }
-  
+  const time = moment().format('YYYYMMDDHHmmss');
+  const balance_obj = {
+    time: time,
+    cash: my_asset[0],
+    btc: my_asset[1],
+    eth: my_asset[2],
+    bnb: my_asset[3]
+  }
+  dbService.collection("balance").doc(time).set(balance_obj)
+  console.log("일일 계좌 저장")
   for(let i=0; i< lists_list.length; i++){
     lists_list[i] = await candle_price(target_coin_list[i],"1h",ma)
   }
@@ -66,6 +75,7 @@ async function MainLoop() {
       top[i].push(bollinger_top);
       bottom[i].push(bollinger_bottom);
 
+
       if(arget_coin_status[i] == true){
         high = Math.max(...lists_list[i])
       }
@@ -84,17 +94,23 @@ async function MainLoop() {
         const my_asset = await balance(target_coin_list);
         const my_asset_units = await balance_units(target_coin_list);
       }
+      const time = moment().format('YYYYMMDDHHmmss');
+      const coin_price_obj = {
+        time, time,
+        center: Mean,
+        top: bollinger_top,
+        bottom: bollinger_bottom
+      }
+      dbService.collection(lists_list[i]+"_price").doc(time).set(coin_price_obj)
     }
-
     count ++;
     console.log(count,"회 실행중");
-  
   },3600000)
   // 계좌 조회
   setInterval(async function() {
     const my_asset = await balance(target_coin_list);
     const my_asset_units = await balance_units(target_coin_list);
-    let time = moment().format('YYYYMMDDHHmmss');
+    const time = moment().format('YYYYMMDDHHmmss');
 
     const balance_obj = {
       time: time,
