@@ -3,6 +3,8 @@ import balance from './balance.js'
 import balance_units from './balance_units.js'
 import candle_price from './candle_price.js'
 import trade from './trade.js'
+import { dbService } from './fbase.js';
+import moment from 'moment'
 
 
 // mybalance()
@@ -71,14 +73,14 @@ async function MainLoop() {
       if(coins_price[i] > bollinger_top && target_coin_status[i] == false){
         trade("buy",target_coin_list[i],Math.round((my_asset[0]/2)/coins_price[i],4));
         target_coin_status[i] = true;
-        console.log(target_coin_list[i],lists_list[i][1],"->",coins_price[i],"👍");
+        console.log(target_coin_list[i],"볼린저 상단 터치");
         const my_asset = await balance(target_coin_list);
         const my_asset_units = await balance_units(target_coin_list);
       }
       if(coins_price[i] < high*0.9 && target_coin_status[i] == true){
         trade("sell",target_coin_list[i],my_asset_units[i]);
         target_coin_status[i] = false;
-        console.log(target_coin_list[i],lists_list[i][1],"->",coins_price[i],"👎");
+        console.log(target_coin_list[i],"고가에서 10% 하락");
         const my_asset = await balance(target_coin_list);
         const my_asset_units = await balance_units(target_coin_list);
       }
@@ -92,6 +94,17 @@ async function MainLoop() {
   setInterval(async function() {
     const my_asset = await balance(target_coin_list);
     const my_asset_units = await balance_units(target_coin_list);
+    let time = moment().format('YYYYMMDDHHmmss');
+
+    const balance_obj = {
+      time: time,
+      cash: my_asset[0],
+      btc: my_asset[1],
+      eth: my_asset[2],
+      bnb: my_asset[3]
+    }
+    dbService.collection("balance").doc(time).set(balance_obj)
+    console.log("일일 계좌 저장")
     console.log(my_asset);
   
   },86400000)
