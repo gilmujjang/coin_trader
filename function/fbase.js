@@ -2,17 +2,16 @@ import firebase from "firebase"
 import "@firebase/auth";
 import "@firebase/firestore";
 import "@firebase/storage";
-import dotenv from 'dotenv'
-dotenv.config()
+import  apikey from '../etc/apikey.js'
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_PUBLIC_API_KEY,
-  authDomain: process.env.FIREBASE_PUBLIC_AUTH_ODOMAIN,
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  projectId: process.env.FIREBASE_PUBLIC_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_PUBLIC_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_PUBLIC_MESSAGINGSENDER_ID,
-  appId: process.env.FIREBASE_PUBLIC_APP_ID
+  apiKey: apikey.FIREBASE_PUBLIC_API_KEY,
+  authDomain: apikey.FIREBASE_PUBLIC_AUTH_ODOMAIN,
+  databaseURL: apikey.FIREBASE_DATABASE_URL,
+  projectId: apikey.FIREBASE_PUBLIC_PROJECT_ID,
+  storageBucket: apikey.FIREBASE_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: apikey.FIREBASE_PUBLIC_MESSAGINGSENDER_ID,
+  appId: apikey.FIREBASE_PUBLIC_APP_ID
 };
 
 if (!firebase.apps.length) {
