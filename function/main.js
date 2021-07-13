@@ -101,7 +101,8 @@ async function MainLoop() {
         top: bollinger_top,
         bottom: bollinger_bottom
       }
-      dbService.collection(lists_list[i]+"_price").doc(time).set(coin_price_obj)
+      console.log(target_coin_list[i]+"_price")
+      dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
     }
     count ++;
     console.log(count,"회 실행중");
