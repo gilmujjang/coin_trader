@@ -76,7 +76,7 @@ async function MainLoop() {
       bottom[i].push(bollinger_bottom);
 
 
-      if(arget_coin_status[i] == true){
+      if(target_coin_status[i] == true){
         high = Math.max(...lists_list[i])
       }
 
