@@ -96,12 +96,12 @@ async function MainLoop() {
       }
       const time = moment().format('YYYYMMDDHHmmss');
       const coin_price_obj = {
-        time, time,
+        time: time,
+        price: coins_price[i],
         center: Mean,
         top: bollinger_top,
         bottom: bollinger_bottom
       }
-      console.log(target_coin_list[i]+"_price")
       dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
     }
     count ++;
