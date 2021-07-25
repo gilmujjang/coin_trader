@@ -26,10 +26,12 @@ let center =  [[],[],[]];
 let top =  [[],[],[]];
 let bottom = [[],[],[]];
 let hold_coin_num = 0;
+let my_asset = new Array(4);
+let my_asset_units = new Array(3);
 
 async function init_function(){
-  const my_asset = await balance(target_coin_list)
-  const my_asset_units = await balance_units(target_coin_list);
+  my_asset = await balance(target_coin_list)
+  my_asset_units = await balance_units(target_coin_list);
   console.log("계좌 상태")
   console.log("현금 :",my_asset[0])
   for(let i=1; i<my_asset.length; i++){
@@ -85,20 +87,24 @@ async function MainLoop() {
       }
 
       if(coins_price[i] > bollinger_top && target_coin_status[i] == false){
+        if(hold_coin_num==3){
+          console.log("보유코인3가지임 아무튼 에러임");
+          return
+        }
         trade("buy",target_coin_list[i],Math.round((my_asset[0]/(3-hold_coin_num))/coins_price[i],4));
         target_coin_status[i] = true;
         hold_coin_num = hold_coin_num+1;
         console.log(target_coin_list[i],"볼린저 상단 돌파");
-        const my_asset = await balance(target_coin_list);
-        const my_asset_units = await balance_units(target_coin_list);
+        my_asset = await balance(target_coin_list);
       }
       if(coins_price[i] < high*0.9 && target_coin_status[i] == true){
+        my_asset_units = await balance_units(target_coin_list);
         trade("sell",target_coin_list[i],my_asset_units[i]);
         target_coin_status[i] = false;
         hold_coin_num = hold_coin_num-1;
         console.log(target_coin_list[i],"고가에서 10% 하락");
-        const my_asset = await balance(target_coin_list);
-        const my_asset_units = await balance_units(target_coin_list);
+        my_asset = await balance(target_coin_list);
+        my_asset_units = await balance_units(target_coin_list);
       }
       const time = moment().format('YYYYMMDDHHmmss');
       const coin_price_obj = {
@@ -115,8 +121,8 @@ async function MainLoop() {
   },3600000)
   // 계좌 조회
   setInterval(async function() {
-    const my_asset = await balance(target_coin_list);
-    const my_asset_units = await balance_units(target_coin_list);
+    my_asset = await balance(target_coin_list);
+    my_asset_units = await balance_units(target_coin_list);
     const time = moment().format('YYYYMMDDHHmmss');
 
     const balance_obj = {
@@ -129,7 +135,6 @@ async function MainLoop() {
     dbService.collection("balance").doc(time).set(balance_obj)
     console.log("일일 계좌 저장")
     console.log(my_asset);
-  
   },86400000)
 }
 
