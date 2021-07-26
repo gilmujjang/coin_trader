@@ -6,7 +6,7 @@ import trade from './trade.js'
 import { dbService } from './fbase.js';
 import moment from 'moment'
 
-let count = 0;
+let count = 6;
 const sd = 1.5;
 const ma = 480;  //20일 은 480시간
 
@@ -83,26 +83,28 @@ async function main_function() {
       my_asset = await balance(target_coin_list);
       my_asset_units = await balance_units(target_coin_list);
     }
-  }
-
-  count ++;
-  //10분에 한번씩 실행하지만 1시간에 한번씩 코인 가격을 저장
-  if(count % 6 == 0){
-    const time = moment().format('YYYYMMDDHHmmss');
-    const coin_price_obj = {
-      time: time,
-      price: coins_price[i],
-      center: Mean,
-      top: bollinger_top,
-      bottom: high*0.9
+    if(count % 6 == 0){
+      const time = moment().format('YYYYMMDDHHmmss');
+      const coin_price_obj = {
+        time: time,
+        price: coins_price[i],
+        center: Mean,
+        top: bollinger_top,
+        bottom: high*0.9
+      }
+  
+      dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
     }
-    dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
+  
   }
   console.log(count/6,"회 실행중");
+  count ++;
+  //10분에 한번씩 실행하지만 1시간에 한번씩 코인 가격을 저장
 }
 
 
 async function daily_save(){
+  my_asset = await balance(target_coin_list);
   const time = moment().format('YYYYMMDDHHmmss');
   const balance_obj = {
     time: time,
@@ -111,6 +113,7 @@ async function daily_save(){
     eth: my_asset[2],
     bnb: my_asset[3]
   }
+
   dbService.collection("balance").doc(time).set(balance_obj)
   console.log("일일 계좌 저장")
   console.log(my_asset);
@@ -128,7 +131,7 @@ async function MainLoop() {
   },600000)
   // 계좌 조회
   setInterval(async function() {
-    daily_save();
+    daily_save(my_asset);
   },86400000)
 }
 
