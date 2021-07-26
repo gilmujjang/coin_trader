@@ -73,7 +73,7 @@ function order_information(coin, order_id){
     console.log(coin," ",total," ",order_info_response.data.type)
     saveinfo(order_info_response.data)
     return
-  }, 500);
+  }, 1000);
 }
 
 function saveinfo(trade_obj){

@@ -6,11 +6,6 @@ import trade from './trade.js'
 import { dbService } from './fbase.js';
 import moment from 'moment'
 
-
-// mybalance()
-// search("BTC")
-// trade("sell","btc",0.0001)
-
 let count = 0;
 const sd = 1.5;
 const ma = 480;  //20일 은 480시간
@@ -20,7 +15,7 @@ const eth_list = new Array(ma);
 const bnb_list = new Array(ma);
 const lists_list = [btc_list, eth_list,bnb_list];
 const target_coin_list = ["BTC", "ETH","BNB"];
-const target_coin_status = [false, false, false];
+let target_coin_status = [false, false, false];
 let num = [[],[],[]];
 let center =  [[],[],[]];
 let top =  [[],[],[]];
@@ -101,6 +96,13 @@ async function daily_save(){
   my_asset = await balance(target_coin_list);
   my_asset_units = await balance_units(target_coin_list);
   const time = moment().format('YYYYMMDDHHmmss');
+  for(let i=0; i<3; i++){
+    if(my_asset[i+1]>10000){
+      target_coin_status[i] = true;
+    } else {
+      target_coin_status[i] = false;
+    }
+  }
 
   const balance_obj = {
     time: time,
