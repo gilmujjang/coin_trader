@@ -94,8 +94,11 @@ async function main_function() {
       }
   
       dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
-      console.log(count/6,"회 실행중");
     }
+  }
+
+  if(count % 6 == 0){
+    console.log(count/6,"회 실행중");
   }
   
   count ++;
