@@ -16,10 +16,6 @@ const bnb_list = new Array(ma);
 const lists_list = [btc_list, eth_list,bnb_list];
 const target_coin_list = ["BTC", "ETH","BNB"];
 let target_coin_status = [false, false, false];
-let num = [[],[],[]];
-let center =  [[],[],[]];
-let top =  [[],[],[]];
-let bottom = [[],[],[]];
 let hold_coin_num = 0;
 let my_asset = new Array(4);
 let my_asset_units = new Array(3);
@@ -28,6 +24,15 @@ async function init_function(){
   daily_save();
   for(let i=0; i< lists_list.length; i++){
     lists_list[i] = await candle_price(target_coin_list[i],"1h",ma)
+  }
+  my_asset = await balance(target_coin_list);
+  for(let i=0; i<3; i++){
+    if(my_asset[i+1]>10000){
+      target_coin_status[i] = true;
+      hold_coin_num = hold_coin_num +1;
+    } else {
+      target_coin_status[i] = false;
+    }
   }
   main_function();
 }
@@ -46,17 +51,7 @@ async function main_function() {
     const Mean = Math.round(lists_list[i].reduce((a,b) => a+b,0) / n);
     const Std = Math.round(Math.sqrt(lists_list[i].map(x => Math.pow(x - Mean,2)).reduce((a,b) => a+b)/n))
     const bollinger_top = Mean + Std*sd;
-    const bollinger_bottom = Mean - Std*sd;
-    let high = 100000000;
-
-    num[i].push(count);
-    center[i].push(Mean);
-    top[i].push(bollinger_top);
-    bottom[i].push(bollinger_bottom);
-
-    if(target_coin_status[i] == true){
-      high = Math.max(...lists_list[i])
-    }
+    const high = Math.max(...lists_list[i])
 
     if(coins_price[i] > bollinger_top && target_coin_status[i] == false){
       if(hold_coin_num==3){
@@ -78,32 +73,26 @@ async function main_function() {
       my_asset = await balance(target_coin_list);
       my_asset_units = await balance_units(target_coin_list);
     }
+  }
+
+  count ++;
+  if(count % 6 == 0){
     const time = moment().format('YYYYMMDDHHmmss');
     const coin_price_obj = {
       time: time,
       price: coins_price[i],
       center: Mean,
       top: bollinger_top,
-      bottom: bollinger_bottom
+      bottom: high*0.9
     }
-  dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
+    dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
   }
-  count ++;
-  console.log(count,"회 실행중");
+  console.log(count/6,"회 실행중");
 }
 
-async function daily_save(){
-  my_asset = await balance(target_coin_list);
-  my_asset_units = await balance_units(target_coin_list);
-  const time = moment().format('YYYYMMDDHHmmss');
-  for(let i=0; i<3; i++){
-    if(my_asset[i+1]>10000){
-      target_coin_status[i] = true;
-    } else {
-      target_coin_status[i] = false;
-    }
-  }
 
+async function daily_save(){
+  const time = moment().format('YYYYMMDDHHmmss');
   const balance_obj = {
     time: time,
     cash: my_asset[0],
@@ -116,13 +105,16 @@ async function daily_save(){
   console.log(my_asset);
 }
 
+
+
+// 메인 프로그램 시작
 init_function();
 
 async function MainLoop() {
   // 시세 감시
   setInterval(async function() {
     main_function();
-  },3600000)
+  },600000)
   // 계좌 조회
   setInterval(async function() {
     daily_save();
