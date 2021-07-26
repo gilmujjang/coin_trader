@@ -91,13 +91,13 @@ async function MainLoop() {
           console.log("보유코인3가지임 아무튼 에러임");
           return
         }
-        trade("buy",target_coin_list[i],Math.round((my_asset[0]/(3-hold_coin_num))/coins_price[i],4));
+        trade("buy",target_coin_list[i],((my_asset[0]/(3-hold_coin_num))/coins_price[i]).toFixed(5));
         target_coin_status[i] = true;
         hold_coin_num = hold_coin_num+1;
         console.log(target_coin_list[i],"볼린저 상단 돌파");
         my_asset = await balance(target_coin_list);
       }
-      if(coins_price[i] < high*0.9 && target_coin_status[i] == true){
+      if(coins_price[i] < high*0.9 && target_coin_status[i] == true && coins_price[i] < bollinger_top){
         my_asset_units = await balance_units(target_coin_list);
         trade("sell",target_coin_list[i],my_asset_units[i]);
         target_coin_status[i] = false;

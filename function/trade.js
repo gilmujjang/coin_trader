@@ -4,6 +4,7 @@ import { dbService } from './fbase.js';
 import moment from 'moment'
 
 export default async function trade(SoB, coin, howmuch){
+  console.log(SoB,coin,howmuch);
   let req_query = {
     endpoint:'/trade/market_'+SoB,
     units:howmuch,
@@ -26,10 +27,9 @@ export default async function trade(SoB, coin, howmuch){
     )
   })
   const trade_response = await trade_order
-  if (trade_response.status == '0000'){
-    const order_id = trade_response.order_id;
-    order_information(coin, order_id);
-  } else {
+  const order_id = trade_response.order_id;
+  order_information(coin, order_id);
+  if (trade_response.status != '0000'){
     console.log(trade_response)
     console.log("trading error")
     return
