@@ -27,9 +27,8 @@ export default async function balance_units(coinlist){
     coin_list.map(async(coin) => {
       const lower_coin = coin.toLowerCase();
       const coin_worth = response_json["available_"+lower_coin]
-      return Math.round(coin_worth)
+      return Number(coin_worth)
     })
   )
   return my_coins
 }
-
