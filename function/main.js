@@ -63,7 +63,7 @@ async function main_function() {
         console.log("보유코인3가지임 아무튼 에러임");
         return
       }
-      trade("buy",target_coin_list[i],((my_asset[0]/(target_coin_list.length-hold_coin_num))/coins_price[i]).toFixed(4));
+      trade("buy",target_coin_list[i],((my_asset[0] * 0.99/(target_coin_list.length-hold_coin_num))/coins_price[i]).toFixed(4));
       target_coin_status[i] = true;
       hold_coin_num = hold_coin_num+1;
       console.log(target_coin_list[i],"볼린저 상단 돌파");
