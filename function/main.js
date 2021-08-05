@@ -75,7 +75,8 @@ async function main_function() {
     if(coins_price[i] < high*0.9 && target_coin_status[i] == true && coins_price[i] < bollinger_top){
       //보유중인 코인의 양을 갱신(금액이 아님)
       my_asset_units = await balance_units(target_coin_list);
-      trade("sell",target_coin_list[i],(my_asset_units[i]).toFixed(4));
+      const units = my_asset_units[i];
+      trade("sell",target_coin_list[i],((Math.floor(units*10000))/10000));
       target_coin_status[i] = false;
       hold_coin_num = hold_coin_num-1;
       console.log(target_coin_list[i],"고가에서 10% 하락");
