@@ -55,15 +55,17 @@ async function main_function() {
     const Std = Math.round(Math.sqrt(lists_list[i].map(x => Math.pow(x - Mean,2)).reduce((a,b) => a+b)/n))
     const bollinger_top = Mean + Std*sd;
     const high = Math.max(...lists_list[i])
+    const donkeyonBottom = high*0.9;
+    const coinPrice = coins_price[i]
 
-    //볼린저상단을 돌파 & 미보유 코인이면 매수
-    if(coins_price[i] > bollinger_top && target_coin_status[i] == false){
+    //볼린저상단을 돌파 & 미보유 코인 & 매도점 이상이면 매수
+    if(coinPrice > bollinger_top && target_coin_status[i] == false && coinPrice > donkeyonBottom){
       //보유코인이 3가지인데 미보유코인으로 뜨면 에러
       if(hold_coin_num==3){
         console.log("보유코인3가지임 아무튼 에러임");
         return
       }
-      trade("buy",target_coin_list[i],((my_asset[0] * 0.99/(target_coin_list.length-hold_coin_num))/coins_price[i]).toFixed(4));
+      trade("buy",target_coin_list[i],((my_asset[0] * 0.99/(target_coin_list.length-hold_coin_num))/coinPrice).toFixed(4));
       target_coin_status[i] = true;
       hold_coin_num = hold_coin_num+1;
       console.log(target_coin_list[i],"볼린저 상단 돌파");
@@ -72,7 +74,7 @@ async function main_function() {
     }
 
     //최근20일 고가에서 -10% 하락 & 보유중인 코인 & 가격이 볼린저 상단 아래에 있으면 매도
-    if(coins_price[i] < high*0.9 && target_coin_status[i] == true && coins_price[i] < bollinger_top){
+    if(coinPrice < donkeyonBottom && target_coin_status[i] == true && coinPrice < bollinger_top){
       //보유중인 코인의 양을 갱신(금액이 아님)
       my_asset_units = await balance_units(target_coin_list);
       const units = my_asset_units[i];
@@ -91,7 +93,7 @@ async function main_function() {
         price: coins_price[i],
         center: Mean,
         top: bollinger_top,
-        bottom: high*0.9
+        bottom: donkeyonBottom
       }
   
       dbService.collection(target_coin_list[i]+"_price").doc(time).set(coin_price_obj)
