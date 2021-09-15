@@ -50,9 +50,8 @@ async function main_function() {
     lists_list[i][0] = coins_price[i];
 
     // 볼린저밴드 계산
-    const n = lists_list[i].length;
-    const Mean = Math.round(lists_list[i].reduce((a,b) => a+b,0) / n);
-    const Std = Math.round(Math.sqrt(lists_list[i].map(x => Math.pow(x - Mean,2)).reduce((a,b) => a+b)/n))
+    const Mean = Math.round(lists_list[i].reduce((a,b) => a+b,0) / ma);
+    const Std = Math.round(Math.sqrt(lists_list[i].map(x => Math.pow(x - Mean,2)).reduce((a,b) => a+b)/ma))
     const bollinger_top = Mean + Std*sd;
     const high = Math.max(...lists_list[i])
     const donkeyonBottom = high*0.9;
