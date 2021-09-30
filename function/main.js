@@ -47,11 +47,7 @@ async function main_function() {
 
     //볼린저상단을 돌파 & 미보유 코인 & 매도점 이상이면 매수
     if(coinPrice > bollinger_top && target_coin_status[i] == false && coinPrice > donkeyonBottom){
-      //보유코인이 3가지인데 미보유코인으로 뜨면 에러
-      if(hold_coin_num==3){
-        console.log("보유코인3가지임 아무튼 에러임");
-        return
-      }
+
       trade("buy",target_coin_list[i],((my_asset[0] * 0.99/(target_coin_list.length-hold_coin_num))/coinPrice).toFixed(4));
       target_coin_status[i] = true;
       hold_coin_num = hold_coin_num+1;
@@ -73,32 +69,15 @@ async function main_function() {
       my_asset = await balance(target_coin_list);
       my_asset_units = await balance_units(target_coin_list);
     }
-    if(count % 6 == 0){
-      const time = moment().format('YYYYMMDDHHmmss');
-      const coin_price_obj = {
-        time: time,
-        price: coinPrice,
-        center: Mean,
-        top: bollinger_top,
-        bottom: donkeyonBottom
-      }
-      saveCoinPrice(target_coin_list[i], coin_price_obj);
-    }
   }
 
   if(count % 6 == 0){
-    console.log(count/6,"회 실행중");
+    const n = count/6;
+    console.log(`${count}회 실행, ${n}시간 경과`);
   }
   
   count ++;
-  //10분에 한번씩 실행하지만 1시간에 한번씩 코인 가격을 저장
 }
-
-function saveCoinPrice(targetCoin, coin_price_obj){
-  const time = moment().format('YYYYMMDDHHmmss');
-  dbService.collection(targetCoin+"_price").doc(time).set(coin_price_obj)
-}
-
 
 async function daily_save(){
   my_asset = await balance(target_coin_list);
@@ -111,7 +90,7 @@ async function daily_save(){
     bnb: my_asset[3]
   }
 
-  // dbService.collection("balance").doc(time).set(balance_obj)
+  dbService.collection("balance").doc(time).set(balance_obj)
   console.log("일일 계좌 저장")
   console.log(my_asset);
 }
