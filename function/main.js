@@ -47,13 +47,12 @@ async function main_function() {
 
     //볼린저상단을 돌파 & 미보유 코인 & 매도점 이상이면 매수
     if(coinPrice > bollinger_top && target_coin_status[i] == false && coinPrice > donkeyonBottom){
-
+      my_asset = await balance(target_coin_list);
       trade("buy",target_coin_list[i],((my_asset[0] * 0.99/(target_coin_list.length-hold_coin_num))/coinPrice).toFixed(4));
       target_coin_status[i] = true;
       hold_coin_num = hold_coin_num+1;
       console.log(target_coin_list[i],"볼린저 상단 돌파");
       //매수후 계좌정보 갱신
-      my_asset = await balance(target_coin_list);
     }
 
     //최근20일 고가에서 -10% 하락 & 보유중인 코인 & 가격이 볼린저 상단 아래에 있으면 매도
@@ -65,9 +64,6 @@ async function main_function() {
       target_coin_status[i] = false;
       hold_coin_num = hold_coin_num-1;
       console.log(target_coin_list[i],"고가에서 10% 하락");
-      //계좌 정보 갱신
-      my_asset = await balance(target_coin_list);
-      my_asset_units = await balance_units(target_coin_list);
     }
   }
 
@@ -81,13 +77,17 @@ async function main_function() {
 
 async function daily_save(){
   my_asset = await balance(target_coin_list);
+  const total = my_asset.reduce(function add(sum, currentValue){
+    return sum + currentValue;
+  }, 0);
   const time = moment().format('YYYYMMDDHHmmss');
   const balance_obj = {
     time: time,
     cash: my_asset[0],
     btc: my_asset[1],
     eth: my_asset[2],
-    bnb: my_asset[3]
+    bnb: my_asset[3],
+    total: total
   }
 
   dbService.collection("balance").doc(time).set(balance_obj)
