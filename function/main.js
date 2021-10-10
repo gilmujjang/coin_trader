@@ -48,7 +48,7 @@ async function main_function() {
     //볼린저상단을 돌파 & 미보유 코인 & 매도점 이상이면 매수
     if(coinPrice > bollinger_top && target_coin_status[i] == false && coinPrice > donkeyonBottom){
       my_asset = await balance(target_coin_list);
-      trade("buy",target_coin_list[i],((my_asset[0] * 0.99/(target_coin_list.length-hold_coin_num))/coinPrice).toFixed(4));
+      trade("buy",target_coin_list[i],((my_asset[0] * 0.95/(target_coin_list.length-hold_coin_num))/coinPrice).toFixed(4));
       target_coin_status[i] = true;
       hold_coin_num = hold_coin_num+1;
       console.log(target_coin_list[i],"볼린저 상단 돌파");
@@ -69,7 +69,7 @@ async function main_function() {
 
   if(count % 6 == 0){
     const n = count/6;
-    console.log(`${count}회 실행, ${n}시간 경과`);
+    console.log(`${count-6}회 실행, ${n-1}시간 경과`);
   }
   
   count ++;
