@@ -48,7 +48,11 @@ async function main_function() {
     //볼린저상단을 돌파 & 미보유 코인 & 매도점 이상이면 매수
     if(coinPrice > bollinger_top && target_coin_status[i] == false && coinPrice > donkeyonBottom){
       my_asset = await balance(target_coin_list);
-      trade("buy",target_coin_list[i],((my_asset[0] * 0.95/(target_coin_list.length-hold_coin_num))/coinPrice).toFixed(4));
+      if(hold_coin_num === 2){
+        trade("buy",target_coin_list[i],((my_asset[0] * 0.75)/coinPrice).toFixed(4));
+      } else {
+        trade("buy",target_coin_list[i],((my_asset[0] * 0.9/(target_coin_list.length-hold_coin_num))/coinPrice).toFixed(4));
+      }
       target_coin_status[i] = true;
       hold_coin_num = hold_coin_num+1;
       console.log(target_coin_list[i],"볼린저 상단 돌파");
