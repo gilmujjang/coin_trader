@@ -107,12 +107,20 @@ init_function();
 async function MainLoop() {
   // 시세 감시
   setInterval(async function() {
-    main_function();
+    try{
+      main_function();
+    } catch (error) {
+      console.log(error);
+    }
   },600000)
   // 계좌 조회
   setInterval(async function() {
-    daily_save(my_asset);
+    try{
+      daily_save(my_asset);
+    } catch (error) {
+      console.log(error)
+    }
   },86400000)
 }
 
-MainLoop()
+MainLoop();
